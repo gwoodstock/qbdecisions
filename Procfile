@@ -1,1 +1,1 @@
-web: python app.py
+web: unicorn run_server:app
