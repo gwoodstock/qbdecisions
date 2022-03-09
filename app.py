@@ -5,6 +5,7 @@ from plot_play import load_data, plot_play
 
 
 app = Dash(__name__)
+server = app.server
 
 # -- Import and clean data (importing csv into pandas)
 
@@ -84,4 +85,5 @@ def update_plays(gameId):
 
 # ------------------------------------------------------------------------------
 
-app.run_server(debug=True)
+if __name__ == '__main__':
+    app.run_server(debug=True)
