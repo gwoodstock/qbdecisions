@@ -83,5 +83,5 @@ def update_plays(gameId):
     return plays
 
 # ------------------------------------------------------------------------------
-if __name__ == '__main__':
-    app.run_server(debug=True)
+
+app.run_server(debug=True)
