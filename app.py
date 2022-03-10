@@ -72,9 +72,11 @@ app.layout = html.Div([
     
     ], style={'display': 'flex', 'flex-direction': 'column', 'width':'100%'}),
 
+    html.Div([
     # Graph
-    dcc.Graph(id='graph_play', config={'displayModeBar':False,'queueLength':0}, figure={}, style={'width': '100%', 'height': '75vh'}),
-    
+    dcc.Graph(id='graph_play', config={'displayModeBar':False,'queueLength':0}, figure={}, style={'width': '100%', 'height': '72vh', 'align': 'center'}),
+    ], ),
+
     # Graph Size
     html.Div([        
             html.P("Adjust field width:"),
@@ -159,7 +161,7 @@ def update_plays(optns):
     Input(component_id='slider', component_property='value'),   
 )
 def update_graph_size(width=100):
-    return {'width': f'{width}%', 'height': '75vh'}
+    return {'width': f'{width}%', 'height': '72vh', 'align': 'center'}
 
 
 ################################################################################################

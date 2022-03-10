@@ -154,11 +154,11 @@ def plot_play(gameId, playId, data):
     # build play
     fig = px.scatter(data_frame=data_graph, x='y', y='x', hover_name='displayName', hover_data=['team', 'position'], range_y=[120, 0], range_x=[0, 53], animation_frame='frameId',
                      color='team', color_discrete_sequence=[home_c1, away_c1, '#80471C'], # red, blue, brown
-                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall']).update_layout(title_x=0.01)
+                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall'])#.update_layout(title_x=0.01)
     
-    fig.update_layout(title_x=0.5,
-                        yaxis={'title':{'text':None}},
-                        xaxis={'title':{'text':None}})
+    fig.update_layout(#title_x=0.5,
+                        yaxis={'title':{'text':None}, 'fixedrange':True},
+                        xaxis={'title':{'text':None}, 'fixedrange':True})
     
     fig.add_annotation(text='',
                   xref="paper", yref="paper",
@@ -257,7 +257,7 @@ def plot_play(gameId, playId, data):
                         'text': event,
                         'x': 0.5,
                         'xref': 'paper',
-                        'y': 1.1,
+                        'y': .5,
                         'yref': 'paper'
                     }])
         else:   # update with last event != None
@@ -267,7 +267,7 @@ def plot_play(gameId, playId, data):
                         'text': event_delay,
                         'x': 0.5,
                         'xref': 'paper',
-                        'y': 1.1,
+                        'y': .5,
                         'yref': 'paper'
                  }])
 
