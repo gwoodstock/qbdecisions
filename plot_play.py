@@ -6,7 +6,7 @@ import numpy as np
 
 def load_data(week=0, team=0, game=0):
 
-    data = pd.read_csv('./data/test_plays.csv')
+    data = pd.read_csv(f'./data/raw/week {week}/{game}.csv')
 
     return data
 

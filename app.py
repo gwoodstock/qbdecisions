@@ -68,10 +68,14 @@ def update_graph(playId, gameId):
 
     container = f'The year chosen by user was: {playId}'
 
+    week = df[df['gameId'] == gameId]['week'].iloc[0]
+
+    print(week)
+    print(gameId)
     # Filtered Data for graphing
     # not currently used
 
-    fig = plot_play(gameId, playId, df)
+    fig = plot_play(gameId, playId, load_data(week=week, game=gameId))
 
 
     return container, fig
