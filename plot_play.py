@@ -102,23 +102,39 @@ def plot_play(gameId, playId, data):
     data_graph['team'] = data_graph['team'].astype(pd.CategoricalDtype(categories=['home', 'away', 'football'], ordered=True))
     data_graph.sort_values(by=['frameId', 'team'], inplace=True)
     
-    home_team = data_graph[data_graph['team'] == 'home'].iloc[0]['team_name']
-    away_team = data_graph[data_graph['team'] == 'away'].iloc[0]['team_name']
-    data_graph['team'] = data_graph['team'].str.replace('football', 'Football')
+    try:
+        home_team = data_graph[data_graph['team'] == 'home'].iloc[0]['team_name']
+        away_team = data_graph[data_graph['team'] == 'away'].iloc[0]['team_name']
+        data_graph['team'] = data_graph['team'].str.replace('football', 'Football')
 
-    home_name = team_map['full_name'][home_team]
-    away_name = team_map['full_name'][away_team]
+        home_name = team_map['full_name'][home_team]
+        away_name = team_map['full_name'][away_team]
 
-    pos_team = data_graph[data_graph['possession'] == 1]['team_name'].iloc[0]
-    pos_team = team_map['full_name'][pos_team]
-    
-    def_team = data_graph[data_graph['possession'] == 0]['team_name'].iloc[0]
-    def_team = team_map['full_name'][def_team]
-    
-    home_c1 = team_map['color'][home_team][0]
-    home_c2 = team_map['color'][home_team][1]
-    away_c1 = team_map['color'][away_team][0]
-    away_c2 = team_map['color'][away_team][1]
+        pos_team = data_graph[data_graph['possession'] == 1]['team_name'].iloc[0]
+        pos_team = team_map['full_name'][pos_team]
+        
+        def_team = data_graph[data_graph['possession'] == 0]['team_name'].iloc[0]
+        def_team = team_map['full_name'][def_team]
+        
+        home_c1 = team_map['color'][home_team][0]
+        home_c2 = team_map['color'][home_team][1]
+        away_c1 = team_map['color'][away_team][0]
+        away_c2 = team_map['color'][away_team][1]
+    except Exception as e:
+        home_team = ''
+        away_team = ''
+
+        home_name = ''
+        away_name = ''
+
+        pos_team = ''
+        
+        def_team = ''
+        
+        home_c1 = ''
+        home_c2 = ''
+        away_c1 = ''
+        away_c2 = ''
 
     # play state
     play_state = get_play_state()

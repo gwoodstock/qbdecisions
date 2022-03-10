@@ -36,7 +36,7 @@ app.layout = html.Div([
 
             dcc.Dropdown(id="select_play",
                 multi=False,
-                value=3081,
+                value=0,
                 style={'width': "100%"},
                 searchable=False
                 )
@@ -66,7 +66,7 @@ app.layout = html.Div([
 )
 def update_graph(playId, gameId):
 
-    container = f'The year chosen by user was: {playId}'
+    container = f'The play chosen by user was: {playId}'
 
     week = df[df['gameId'] == gameId]['week'].iloc[0]
 
@@ -74,8 +74,11 @@ def update_graph(playId, gameId):
     print(gameId)
     # Filtered Data for graphing
     # not currently used
-
-    fig = plot_play(gameId, playId, load_data(week=week, game=gameId))
+    
+    if playId != 0:
+        fig = plot_play(gameId, playId, load_data(week=week, game=gameId))
+    else:
+        fig = px.scatter()
 
 
     return container, fig
