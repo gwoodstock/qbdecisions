@@ -19,7 +19,7 @@ games = [{"label": str(gameId), "value": gameId} for gameId in df['gameId'].uniq
 # App layout
 app.layout = html.Div([
 
-    html.H1("Professional Football Pass Plays from 2018", style={'text-align': 'center'}),
+    html.H1("NFL Pass Plays (2018)", style={'text-align': 'center'}),
 
     # Menu
     html.Div([
@@ -30,13 +30,15 @@ app.layout = html.Div([
                 options=games,
                 multi=False,
                 value=2018090912,
-                style={'width': "100%"}
+                style={'width': "100%"},
+                searchable=False
                 ),
 
             dcc.Dropdown(id="select_play",
                 multi=False,
                 value=3081,
-                style={'width': "100%"}
+                style={'width': "100%"},
+                searchable=False
                 )
     ], style={'display': 'flex', 'flex-direction': 'row', 'width': '50%'}),
 
@@ -47,7 +49,7 @@ app.layout = html.Div([
 
     html.Div(id='output_container', children=[]),   # print out
 
-    dcc.Graph(id='graph_play', figure={}, style={'width': '100%', 'height': '80vh'})
+    dcc.Graph(id='graph_play', config={'displayModeBar':False,'queueLength':0}, figure={}, style={'width': '100%', 'height': '80vh'})
 
 ])
 
