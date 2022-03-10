@@ -139,8 +139,12 @@ def plot_play(gameId, playId, data):
     # play state
     play_state = get_play_state()
     play_state = play_state[(play_state['gameId'] == gameId) & (play_state['playId'] == playId)]
-    los = play_state.iloc[0]['absoluteYardlineNumber']
-    ytg = los - play_state.iloc[0]['yardsToGo']
+    if(play_state.shape[0] > 0):
+        los = play_state['absoluteYardlineNumber'].iloc[0]
+        ytg = los - play_state['yardsToGo'].iloc[0]
+    else:
+        los = 50
+        ytg = 60
 
 
 
@@ -150,7 +154,7 @@ def plot_play(gameId, playId, data):
     # build play
     fig = px.scatter(data_frame=data_graph, x='y', y='x', hover_name='displayName', hover_data=['team', 'position'], range_y=[120, 0], range_x=[0, 53], animation_frame='frameId',
                      color='team', color_discrete_sequence=[home_c1, away_c1, '#80471C'], # red, blue, brown
-                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-wide']).update_layout(title_x=0.01)
+                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall']).update_layout(title_x=0.01)
     
     fig.update_layout(title_x=0.5,
                         yaxis={'title':{'text':None}},
@@ -159,22 +163,23 @@ def plot_play(gameId, playId, data):
     fig.add_annotation(text='',
                   xref="paper", yref="paper",
                   x=.5, y=1, showarrow=False,
-                  font=dict(size=30, color=home_c2)
+                  font=dict(size=30, color=home_c1)
                   )
 
-    fig.add_annotation(text='Touchdown',
-                  xref="paper", yref="paper",
-                  x=.5, y=1, showarrow=False,
-                  font=dict(size=30, color=home_c2)
-                  )
-    fig.add_hrect(y0=0, y1=10, line_width=0, fillcolor=home_c1, opacity=0.15)
+    if los > 10:
+        fig.add_annotation(text='Touchdown',
+                    xref="paper", yref="paper",
+                    x=.5, y=1, showarrow=False,
+                    font=dict(size=30, color=home_c2)
+                    )
+    fig.add_hrect(y0=0, y1=10, line_width=0, fillcolor=home_c1, opacity=0.25)
     
     fig.add_annotation(text='Touchdown',
                   xref="paper", yref="paper",
                   x=.5, y=0, showarrow=False,
                   font=dict(size=30, color=home_c2)
     )
-    fig.add_hrect(y0=110, y1=120, line_width=0, fillcolor=home_c1, opacity=0.15)
+    fig.add_hrect(y0=110, y1=120, line_width=0, fillcolor=home_c1, opacity=0.25)
 
     
 
