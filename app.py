@@ -9,7 +9,7 @@ server = app.server
 
 # -- Import and clean data (importing csv into pandas)
 
-df = pd.read_csv("./data/test_plays.csv")
+df = pd.read_csv("./data/plays.csv")
 # print(df[:5])
 # plays = [{"label": str(playId), "value": playId} for playId in df['playId'].unique()]
 games = [{"label": str(gameId), "value": gameId} for gameId in df['gameId'].unique()]
