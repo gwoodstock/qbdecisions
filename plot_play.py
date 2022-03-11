@@ -255,10 +255,10 @@ def plot_play(gameId, playId, data):
                 [{'font': {'color': '#203731', 'size': 30},
                         'showarrow': False,
                         'text': event,
-                        'xanchor': 'center',
+                        'yanchor': 'bottom',
                         'x': 0.5,
                         'xref': 'paper',
-                        'y': -0.1,
+                        'y': 1,
                         'yref': 'paper'
                     }])
         else:   # update with last event != None
@@ -266,10 +266,10 @@ def plot_play(gameId, playId, data):
                 [{'font': {'color': '#203731', 'size': 30},
                         'showarrow': False,
                         'text': event_delay,
-                        'xanchor': 'center',
+                        'yanchor': 'bottom',
                         'x': 0.5,
                         'xref': 'paper',
-                        'y': -0.1,
+                        'y': 1,
                         'yref': 'paper'
                  }])
 

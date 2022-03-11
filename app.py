@@ -8,7 +8,8 @@ from plot_play import load_data, plot_play
 app = Dash(__name__)
 server = app.server
 
-# -- Import and clean data (importing csv into pandas)
+################################################################################################
+# Data
 
 df = pd.read_csv("./data/plays.csv")
 # print(df[:5])
@@ -18,11 +19,15 @@ random_gameid = np.random.choice(df['gameId'].unique())
 random_playid = np.random.choice(df[df['gameId'] == random_gameid]['playId'].unique())
 random_team = df[(df['gameId'] == random_gameid) & (df['playId'] == random_playid)]['possessionTeam'].iloc[0]
 
-# ------------------------------------------------------------------------------
+# Game State
+
+
+
+################################################################################################
 # App layout
 app.layout = html.Div([
 
-    html.H1("Computer Chair Quarterback", style={'text-align': 'center'}),
+    html.H1("Computer Chair QB", style={'text-align': 'center'}),
 
     # Menu
     html.Div([
