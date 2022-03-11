@@ -26,31 +26,26 @@ random_team = df[(df['gameId'] == random_gameid) & (df['playId'] == random_playi
 ################################################################################################
 # App layout
 app.layout = html.Div([
-
-    html.H1("Computer Chair QB", style={'text-align': 'center'}),
+    html.B(),
 
     # Menu
     html.Div([
-        
         # Selection Div
         html.Div([
-        dcc.RadioItems(
-            id='select_by',
-            options=['Team', 'Week'], 
-            value='Team', 
-            inline=True,
-            style={'width': '20%'}
-            ),
-        ], style={'display': 'flex', 'flex-direction': 'column', 'width': '100%'}
-        ),
-
-        html.Div([
+            html.B(),
+            dcc.RadioItems(
+                id='select_by',
+                options=['Team', 'Week'], 
+                value='Team', 
+                inline=True,
+                style={'width': '90%'}
+                ),
             dcc.Dropdown(
                 id='primary_dropdown',
                 options=[], 
                 value=random_team,
                 multi=False,
-                style={'width': '40%'},
+                style={'width': '90%'},
                 searchable=False
                 ),
 
@@ -59,20 +54,53 @@ app.layout = html.Div([
                 options=[],
                 value=random_gameid,
                 multi=False,
-                style={'width': "40%"},
+                style={'width': "90%"},
                 searchable=False
                 ),
 
-            dcc.Dropdown(id='select_play',
+            dcc.Dropdown(
+                id='select_play',
                 multi=False,
                 options=[],
                 value=random_playid,
-                style={'width': "40%"},
+                style={'width': "90%"},
                 searchable=False
                 ),
-    ], style={'display': 'flex', 'flex-direction': 'column', 'width': '100%'}),
-    
-    ], style={'display': 'flex', 'flex-direction': 'column', 'width':'100%'}),
+    ], style={'display': 'flex', 'flex-direction': 'column', 'width': '80%'}),
+
+        # Scoreboard Div
+        html.Div([
+            
+            html.Div([
+                html.P('', style={'width': '25%', 'fontSize': 24, 'align-items': 'center'}),
+                html.P(children='', id='home_name', style={'width': '45%', 'fontSize': 24}),
+                html.P(children='', id='score_home', style={'width': '5%', 'fontSize': 24}),
+                html.P('', style={'width': '25%', 'fontSize': 24, 'align-items': 'right'}),
+
+            ], style={'display': 'flex', 'flex-direction': 'row', 'width': '100%'}),
+            
+            html.Div([
+                html.P('', style={'width': '25%', 'fontSize': 24, 'align-items': 'center'}),
+                html.P(children='', id='away_name', style={'width': '45%', 'fontSize': 24}),
+                html.P(children='', id='score_away', style={'width': '5%', 'fontSize': 24}),
+                html.P('', style={'width': '25%', 'fontSize': 24, 'align-items': 'right'}),
+
+            ], style={'display': 'flex', 'flex-direction': 'row', 'width': '100%'}),
+
+            html.Hr(style={'width': '50%', 'fontSize': 24, 'align-items': 'center'}),
+
+
+    ], style={'display': 'flex', 'flex-direction': 'column', 'width': '100%', 'align': 'top'}),
+
+        # More Info Div
+        html.Div([
+
+            html.H1("Computer Chair QB", style={'text-align': 'center'}),
+            html.P('by Gene Woodstock')
+
+    ], style={'display': 'flex', 'flex-direction': 'column', 'width': '80%', 'align-items': 'center'}),
+
+    ], style={'display': 'flex', 'flex-direction': 'row', 'width':'100%'}),
 
     html.Div([
     # Graph
@@ -93,7 +121,12 @@ app.layout = html.Div([
 ################################################################################################
 # Update Graph
 @app.callback(
-    Output(component_id='graph_play', component_property='figure'),
+    [Output(component_id='graph_play', component_property='figure'),
+     Output(component_id='home_name', component_property='children'),
+     Output(component_id='score_home', component_property='children'),
+     Output(component_id='away_name', component_property='children'),
+     Output(component_id='score_away', component_property='children')],
+
     [Input(component_id='select_play', component_property='value'),
      Input(component_id='select_game', component_property='value'),
     ]
@@ -106,11 +139,12 @@ def update_graph(playId, gameId):
     print(gameId)
     
     if int(playId) != 0:
-        fig = plot_play(gameId, playId, load_data(week=week, game=gameId))
+        fig, home_name, score_home, away_name, score_away = plot_play(gameId, playId, load_data(week=week, game=gameId))
     else:
         fig = px.scatter()
+        home_name, score_home, away_name, score_away = 0, 0, 0, 0
 
-    return fig
+    return fig, home_name, str(score_home), away_name, str(score_away)
 
 
 ################################################################################################

@@ -180,7 +180,7 @@ def plot_play(gameId, playId, data):
                   font=dict(size=30, color=home_c1)
                   )
 
-    if los > 10:
+    if los > 25:
         fig.add_annotation(text='Touchdown',
                     xref="paper", yref="paper",
                     x=.5, y=1, showarrow=False,
@@ -293,7 +293,7 @@ def plot_play(gameId, playId, data):
                         'yref': 'paper'
                  }])
 
-    return fig
+    return fig, home_name, int(score_home), away_name, int(score_away)
 
 
 if __name__ == '__main__':
