@@ -39,12 +39,9 @@ app.layout = html.Div([
             options=['Team', 'Week'], 
             value='Team', 
             inline=True,
-            style={'width': '100%'}
+            style={'width': '20%'}
             ),
-
-        html.P("Select Game:", style={'width': '99%'}),
-        html.P("Select Play:", style={'width': '99%'}),
-        ], style={'display': 'flex', 'flex-direction': 'row', 'width': '100%'}
+        ], style={'display': 'flex', 'flex-direction': 'column', 'width': '100%'}
         ),
 
         html.Div([
@@ -53,7 +50,7 @@ app.layout = html.Div([
                 options=[], 
                 value=random_team,
                 multi=False,
-                style={'width': '99%'},
+                style={'width': '40%'},
                 searchable=False
                 ),
 
@@ -62,7 +59,7 @@ app.layout = html.Div([
                 options=[],
                 value=random_gameid,
                 multi=False,
-                style={'width': "99%"},
+                style={'width': "40%"},
                 searchable=False
                 ),
 
@@ -70,16 +67,16 @@ app.layout = html.Div([
                 multi=False,
                 options=[],
                 value=random_playid,
-                style={'width': "99%"},
+                style={'width': "40%"},
                 searchable=False
                 ),
-    ], style={'display': 'flex', 'flex-direction': 'row', 'width': '100%'}),
+    ], style={'display': 'flex', 'flex-direction': 'column', 'width': '100%'}),
     
     ], style={'display': 'flex', 'flex-direction': 'column', 'width':'100%'}),
 
     html.Div([
     # Graph
-    dcc.Graph(id='graph_play', config={'displayModeBar':False,'queueLength':0}, figure={}, style={'width': '100%', 'height': '72vh', 'align': 'center'}),
+    dcc.Graph(id='graph_play', config={'displayModeBar':False,'queueLength':0}, figure={}, style={'width': '100%', 'height': '70vh', 'align': 'center'}),
     ], ),
 
     # Graph Size
@@ -166,7 +163,7 @@ def update_plays(optns):
     Input(component_id='slider', component_property='value'),   
 )
 def update_graph_size(width=100):
-    return {'width': f'{width}%', 'height': '72vh', 'align': 'center'}
+    return {'width': f'{width}%', 'height': '70vh', 'align': 'center'}
 
 
 ################################################################################################

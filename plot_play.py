@@ -139,12 +139,26 @@ def plot_play(gameId, playId, data):
     # play state
     play_state = get_play_state()
     play_state = play_state[(play_state['gameId'] == gameId) & (play_state['playId'] == playId)]
+
     if(play_state.shape[0] > 0):
-        los = play_state['absoluteYardlineNumber'].iloc[0]
+
+        los = data_graph[data_graph['team'] == 'Football'].iloc[0]['x']
         ytg = los - play_state['yardsToGo'].iloc[0]
+        score_home = play_state['preSnapHomeScore'].iloc[0]
+        score_away = play_state['preSnapVisitorScore'].iloc[0]
+        clock = play_state['gameClock'].iloc[0]
+        down = play_state['down'].iloc[0]
+        quarter = play_state['quarter'].iloc[0]
+        desc = play_state['playDescription'].iloc[0]
     else:
         los = 50
         ytg = 60
+        score_home = 0
+        score_away = 0
+        clock = ''
+        down = 1
+        quarter = 1
+        desc = ''
 
 
 
@@ -181,6 +195,12 @@ def plot_play(gameId, playId, data):
     )
     fig.add_hrect(y0=110, y1=120, line_width=0, fillcolor=home_c1, opacity=0.25)
 
+    fig.add_annotation(text=desc,
+                  xref="paper", yref="paper",
+                  x=.5, y=0, showarrow=False,
+                  yanchor='top',
+                  font=dict(size=16)
+    )
     
 
 
