@@ -204,4 +204,4 @@ def update_graph_size(width=100):
 # Launch App Locally
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
