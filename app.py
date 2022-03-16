@@ -12,16 +12,14 @@ server = app.server
 # Data
 
 df = pd.read_csv("./data/plays.csv")
-# print(df[:5])
-# plays = [{"label": str(playId), "value": playId} for playId in df['playId'].unique()]
+
 games = [{"label": str(gameId), "value": gameId} for gameId in df['gameId'].unique()]
-random_gameid = np.random.choice(df['gameId'].unique())
-random_playid = np.random.choice(df[df['gameId'] == random_gameid]['playId'].unique())
-random_team = df[(df['gameId'] == random_gameid) & (df['playId'] == random_playid)]['possessionTeam'].iloc[0]
-
-# Game State
-
-
+# random_gameid = np.random.choice(df['gameId'].unique())
+# random_playid = np.random.choice(df[df['gameId'] == random_gameid]['playId'].unique())
+# random_team = df[(df['gameId'] == random_gameid) & (df['playId'] == random_playid)]['possessionTeam'].iloc[0]
+random_playid = 75
+random_gameid = 2018090600
+random_team = 'ATL'
 
 ################################################################################################
 # App layout
@@ -95,7 +93,7 @@ app.layout = html.Div([
         # More Info Div
         html.Div([
 
-            html.H1("Computer Chair QB", style={'text-align': 'center'}),
+            html.H1("QB-iQ", style={'text-align': 'center'}),
             html.P('by Gene Woodstock')
 
     ], style={'display': 'flex', 'flex-direction': 'column', 'width': '80%', 'align-items': 'center'}),
@@ -135,8 +133,8 @@ def update_graph(playId, gameId):
 
     week = df[df['gameId'] == gameId]['week'].iloc[0]
 
-    print(week)
-    print(gameId)
+    # print(week)
+    # print(gameId)
     
     if int(playId) != 0:
         fig, home_name, score_home, away_name, score_away = plot_play(gameId, playId, load_data(week=week, game=gameId))
