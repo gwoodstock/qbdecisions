@@ -212,9 +212,9 @@ def plot_play(gameId, playId, data):
     data_graph['est_epa'] = data_graph['est_epa'].replace('100.0', ' ')
 
     qbiq = 0
-    if (actual_epa - optimal_epa) > 0:
+    if actual_epa > optimal_epa > 0:
         qbiq += 1
-    if (actual_epa - optimal_epa) < 0 and actual_epa > 0:
+    if actual_epa < optimal_epa < 0 and actual_epa > 0:
         qbiq += .5
     
     qbiq = np.round(1 + qbiq * actual_epa, 1)
