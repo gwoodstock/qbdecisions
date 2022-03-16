@@ -211,6 +211,14 @@ def plot_play(gameId, playId, data):
     data_graph['est_epa'] = data_graph['est_epa'].astype(str)
     data_graph['est_epa'] = data_graph['est_epa'].replace('100.0', ' ')
 
+    qbiq = 0
+    if (actual_epa - optimal_epa) > 0:
+        qbiq += 1
+    if (actual_epa - optimal_epa) < 0 and actual_epa > 0:
+        qbiq += .5
+    
+    qbiq = np.round(1 + qbiq * actual_epa, 1)
+
     # print out
     print(f'Game ID: {data_graph["gameId"].loc[0]}\nPlay: {data_graph["playId"].loc[0]}')
 
@@ -242,8 +250,12 @@ def plot_play(gameId, playId, data):
         act_sign = '+'
     else:
         act_sign = ''
+    if qbiq > 0:
+        qb_sign = '+'
+    else:
+        qb_sign = ''
     
-    fig.add_annotation(text=f'Optimal EPA {opt_sign}{optimal_epa}<br>Actual EPA: {act_sign}{actual_epa}',
+    fig.add_annotation(text=f'QB-iQ {qb_sign}{qbiq}<br>Optimal EPA {opt_sign}{optimal_epa} | Actual EPA: {act_sign}{actual_epa}',
                      xref="paper", yref="paper", yanchor='bottom', xanchor='right',
                      x=1., y=1., showarrow=False,
                      font=dict(size=18, color='black')
