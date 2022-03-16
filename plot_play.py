@@ -7,7 +7,8 @@ import numpy as np
 def load_data(week=0, team=0, game=0):
 
     # data = pd.read_csv(f'./data/raw/week {week}/{game}.csv', compression='zip')
-    data = pd.read_csv(f'./data/pred/week_1.csv', compression='zip')
+    data = pd.read_csv(f'./data/pred/week_{week}.csv', compression='zip')
+    data = data[data['gameId'] == game].copy()
 
     return data
 
