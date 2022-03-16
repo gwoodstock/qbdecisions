@@ -216,6 +216,8 @@ def plot_play(gameId, playId, data):
         qbiq += 1
     if actual_epa < optimal_epa < 0 and actual_epa > 0:
         qbiq += .5
+    else: 
+        qbiq = 0
     
     qbiq = np.round(1 + qbiq * actual_epa, 1)
 
