@@ -217,7 +217,7 @@ def plot_play(gameId, playId, data):
     # build play
     fig = px.scatter(data_frame=data_graph, x='y', y='x', range_y=[120, 0], range_x=[0, 53], animation_frame='frameId',
                      color='team', color_discrete_sequence=[home_c1, away_c1, '#80471C', '#FFD700'], # red, blue, brown, gold
-                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall', 'star'], custom_data=['displayName', 'preds', 'est_epa', 'displayName'])#.update_layout(title_x=0.01)       , 'star'
+                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall', 'star'], custom_data=['displayName', 'preds', 'est_epa', 'position'])#.update_layout(title_x=0.01)       , 'star'
 
     fig.update_traces(
     hovertemplate="<br>".join([
