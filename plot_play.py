@@ -22,7 +22,8 @@ def get_play_state():
     
 
 def plot_play(gameId, playId, data):
-
+    ####################################################################
+    # Team Colors and Print Outs
     team_map = {
         'color': {
     'ARI':	['#97233F', '#000000'],
@@ -104,7 +105,6 @@ def plot_play(gameId, playId, data):
     data_graph['team'] = data_graph['team'].astype(pd.CategoricalDtype(categories=['home', 'away', 'football', 'Optimal Receiver'], ordered=True))
     data_graph.sort_values(by=['frameId', 'team'], inplace=True)
     
-    # print(data_graph[data_graph['team'] == 'away'].iloc[0]['team_name'])
 
     try:
         home_team = data_graph[data_graph['team'] == 'home'].iloc[0]['team_name']
@@ -125,29 +125,6 @@ def plot_play(gameId, playId, data):
         away_c1 = team_map['color'][away_team][0]
         away_c2 = team_map['color'][away_team][1]
 
-        
-        # # estimated epa
-        # est_epa = data_graph['est_epa']
-        # print(est_epa)
-
-        # # estimated completion percentage
-        # est_comp = data_graph['preds']
-        # print(est_comp)
-
-        # # optimal rec
-        
-        # print(optimal_rec)
-        # # actual epa gained
-
-        # # adjusted epa
-        # adjusted_epa = data_graph[data_graph['displayName'] == optimal_rec]['optimal_epa'].max()
-        # print(adjusted_epa)
-
-        # # epa over optimal
-        # epa_over_optimal = actual_epa - adjusted_epa
-        # print(epa_over_optimal)
-
-
     except Exception as e:
         home_team = ''
         away_team = ''
@@ -163,7 +140,9 @@ def plot_play(gameId, playId, data):
         home_c2 = ''
         away_c1 = ''
         away_c2 = ''
+    ####################################################################
 
+    ####################################################################
     # play state
     play_state = get_play_state()
     play_state = play_state[(play_state['gameId'] == gameId) & (play_state['playId'] == playId)]
@@ -174,7 +153,7 @@ def plot_play(gameId, playId, data):
         ytg = los - play_state['yardsToGo'].iloc[0]
         score_home = play_state['preSnapHomeScore'].iloc[0]
         score_away = play_state['preSnapVisitorScore'].iloc[0]
-        clock = play_state['gameClock'].iloc[0]
+        clock = play_state['gameClock'].iloc[0]     # add at a later date
         down = int(data_graph[data_graph['down'].notna()]['down'].iloc[0])
         quarter = play_state['quarter'].iloc[0]
         desc = play_state['playDescription'].iloc[0]
@@ -183,11 +162,14 @@ def plot_play(gameId, playId, data):
         ytg = 60
         score_home = 0
         score_away = 0
-        clock = ''
+        clock = ''  # add at a later date
         down = 1
-        quarter = 1
+        quarter = 1 # add at a later date
         desc = ''
+    ####################################################################
 
+    ####################################################################
+    # EPA vs opEPA vs QBiQ
     try:
         optimal_rec = data_graph[data_graph['optimal_receiver'].notna()]['optimal_receiver'].iloc[0]
         actual_epa = np.round(data_graph[data_graph['epa_actual'].notna()]['epa_actual'].iloc[0], 1)
@@ -211,39 +193,49 @@ def plot_play(gameId, playId, data):
     data_graph['est_epa'] = data_graph['est_epa'].astype(str)
     data_graph['est_epa'] = data_graph['est_epa'].replace('100.0', ' ')
 
+    # Calculate QBiQ
     qbiq = 0
-    if actual_epa > optimal_epa > 0:
+    if actual_epa > optimal_epa:
         qbiq += 1
-    if actual_epa < optimal_epa < 0 and actual_epa > 0:
+        qbiq = np.round(1 + qbiq * actual_epa, 1)
+    elif actual_epa < optimal_epa and actual_epa > 0:
         qbiq += .5
+        qbiq = np.round(1 + qbiq * actual_epa, 1)
+    elif actual_epa < optimal_epa and actual_epa < 0:
+        qbiq = 0
     else: 
         qbiq = 0
-    
-    qbiq = np.round(1 + qbiq * actual_epa, 1)
+    ####################################################################
 
-    # print out
+    # Debugging Print Out
     print(f'Game ID: {data_graph["gameId"].loc[0]}\nPlay: {data_graph["playId"].loc[0]}')
 
-    # build play
+    ####################################################################
+    # Graph Play
     fig = px.scatter(data_frame=data_graph, x='y', y='x', range_y=[120, 0], range_x=[0, 53], animation_frame='frameId',
                      color='team', color_discrete_sequence=[home_c1, away_c1, '#80471C', '#FFD700'], # red, blue, brown, gold
-                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall', 'star'], custom_data=['displayName', 'preds', 'est_epa', 'position'])#.update_layout(title_x=0.01)       , 'star'
+                     symbol = 'team', symbol_sequence = ['circle', 'x', 'diamond-tall', 'star'], custom_data=['displayName', 'preds', 'est_epa', 'position'])
 
+    # Hover Template (update frame by frame below)
     fig.update_traces(
     hovertemplate="<br>".join([
         "<b> %{customdata[0]}</b> %{customdata[3]}",
         "Catch Prob: %{customdata[1]}%",
         "Est. EPA: %{customdata[2]}"]))
 
-    fig.update_layout(#title_x=0.5,
-                        yaxis={'title':{'text':None}, 'fixedrange':True},
-                        xaxis={'title':{'text':None}, 'fixedrange':True})
+    # Remove Axis
+    fig.update_layout(
+                yaxis={'title':{'text':None}, 'fixedrange':True},
+                xaxis={'title':{'text':None}, 'fixedrange':True}
+                )
     
     fig.add_annotation(text='',
-                  xref="paper", yref="paper",
-                  x=.5, y=1, showarrow=False,
-                  font=dict(size=30, color=home_c1)
-                  )
+                xref="paper", yref="paper",
+                x=.5, y=1, showarrow=False,
+                font=dict(size=30, color=home_c1)
+                )
+    
+    # Annotate Optimal EPA readouts
     if optimal_epa > 0:
         opt_sign = '+'
     else:
@@ -257,12 +249,13 @@ def plot_play(gameId, playId, data):
     else:
         qb_sign = ''
     
-    fig.add_annotation(text=f'QB-iQ {qb_sign}{qbiq}<br>Optimal EPA {opt_sign}{optimal_epa} | Actual EPA: {act_sign}{actual_epa}',
-                     xref="paper", yref="paper", yanchor='bottom', xanchor='right',
-                     x=1., y=1., showarrow=False,
+    fig.add_annotation(text=f'QB-iQ: {qb_sign}{qbiq}<br>Optimal EPA: {opt_sign}{optimal_epa}<br>Actual EPA: {act_sign}{actual_epa}',
+                     xref="paper", yref="paper", yanchor='bottom', xanchor='left',
+                     x=1.01, y=.4, showarrow=False,
                      font=dict(size=18, color='black')
                         )
 
+    # Annotate Down Marker
     if down == 1:
         ending = 'st'
     if down == 2:
@@ -277,15 +270,12 @@ def plot_play(gameId, playId, data):
                      x=1., y=los, showarrow=False,
                      font=dict(size=18, color='white')
                         )
-    fig.add_hrect(y0=0, y1=10, line_width=0, fillcolor=home_c1, opacity=0.3)
     
-    # fig.add_annotation(text='Touchdown',
-    #               xref="paper", yref="paper",
-    #               x=.5, y=0, showarrow=False,
-    #               font=dict(size=30, color=home_c2)
-    # )
+    # End Zone Colors
+    fig.add_hrect(y0=0, y1=10, line_width=0, fillcolor=home_c1, opacity=0.3)
     fig.add_hrect(y0=110, y1=120, line_width=0, fillcolor=home_c1, opacity=0.3)
 
+    # Annotate Play Description
     _ = 100
     _ += ~desc[_:0:-1].index(' ') + 1
     
@@ -297,14 +287,13 @@ def plot_play(gameId, playId, data):
                   font=dict(size=16)
     )
     
-
-
-    # style field
-    fig.add_hline(y=10, line_color='#FFFFFF')                                       # end zone line left
-    fig.add_hline(y=110, line_color='#FFFFFF')                                      # end zone line right
-    fig.add_hline(y=los, line_color='DarkSlateGrey', line_dash="dash")              # LOS
+    # Style Field
+    fig.add_hline(y=10, line_color='#FFFFFF')                                       # end zone line top
+    fig.add_hline(y=110, line_color='#FFFFFF')                                      # end zone line bottom
+    fig.add_hline(y=los, line_color='DarkSlateGrey', line_dash="dash")              # Line of scrim
     fig.add_hline(y=ytg, line_color='yellow')                                       # Line to gain
 
+    # Yard markers
     fig.update_layout(
             yaxis = dict(
                 tickmode = 'array',
@@ -325,80 +314,61 @@ def plot_play(gameId, playId, data):
             }
     )
        
-    # style marker
+    # Team Marker Outline
     fig.update_traces(marker=dict(
                                 size=24,
                                 line=dict(
                                     width=2,
-                                    # color=home_c2
-                                    )
+                                )
                                 ),
                       selector=dict(
                                 mode='markers'
                                 )
                                 )
     
-    # # opEPA vs Actual EPA
-    # optimal_epa_idx = data_graph['epa_est'].idxmax()
-    # optimal_epa = data_graph.loc[optimal_epa_idx, 'epa_est'].iloc[0]
-    # actual_epa = data_graph['epa'].iloc[0]
-    # epa_delta = actual_epa - optimal_epa
-    
-    # # Optimal Target
-    # optimal_receiver = data_graph.loc[optimal_epa_idx, 'displayName'].iloc[0]
-
-    # # Play Success
-    # play_success = 0
-    # if epa_delta > 0:
-    #     play_success = 1
-    # elif epa_delta <= 0 and actual_epa > 0:
-    #     play_success = .5
-
-
-
-
-    # print(fig['data'])
     fig['data'][0]['marker']['line']['color'] = home_c2     # home team border
     fig['data'][1]['marker']['line']['color'] = away_c2     # away team border
     fig['data'][2]['marker']['line']['color'] = '#80471C'   # football border
     fig['data'][0]['name'] = home_name
     fig['data'][1]['name'] = away_name
 
-
-    # # animation
-    fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 100 # frame rate
+    ####################################################################
+    # Animation Frames
+    fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 100 # frame rate. Consider giving option to be adjustable by user at later date
     
-    for button in fig.layout.updatemenus[0].buttons:
+    for button in fig.layout.updatemenus[0].buttons:    # redraw the field on every new frame. This allows annotations to be dynamic
         button['args'][1]['frame']['redraw'] = True
 
-    event_delay = ''
+    event_delay = ''    # empty string if no new event
     for k in range(len(fig.frames)):
         
-        fig.frames[k]['data'][0]['name'] = home_name
+        fig.frames[k]['data'][0]['name'] = home_name    # set legend to full team name instead of abbrev
         fig.frames[k]['data'][1]['name'] = away_name
 
         # Hover Data
-        fig.frames[k]['data'][0]['hovertemplate'] = "<br>".join([
+        fig.frames[k]['data'][0]['hovertemplate'] = "<br>".join([   # home
         "<b> %{customdata[0]}</b> %{customdata[3]}",
         "Catch Prob: %{customdata[1]}%",
         "Est. EPA: %{customdata[2]}"])
-        fig.frames[k]['data'][1]['hovertemplate'] = "<br>".join([
+        fig.frames[k]['data'][1]['hovertemplate'] = "<br>".join([   # away
         "<b> %{customdata[0]}</b> %{customdata[3]}",
         "Catch Prob: %{customdata[1]}%",
         "Est. EPA: %{customdata[2]}"])
-        fig.frames[k]['data'][2]['hovertemplate'] = "Football"
-        fig.frames[k]['data'][3]['hovertemplate'] = "<br>".join([
+        fig.frames[k]['data'][2]['hovertemplate'] = "Football"      # football
+        fig.frames[k]['data'][3]['hovertemplate'] = "<br>".join([   # optimal rec
         "<b> %{customdata[0]}</b> %{customdata[3]}",
         "Catch Prob: %{customdata[1]}%",
         "Est. EPA: %{customdata[2]}"])
+        # consider adjusting with if statements to differentiate defender hover info from offensive player hover info. Currently home/away/football/optimal rec
 
         # animate event annotations
         f = sorted(data_graph['frameId'].unique())
-        event = data_graph[data_graph['frameId'] == f[k]]['event'].iloc[0]
-        event = event.replace('_', ' ').title()
-        if event != 'None': # update fresh event
+        event = data_graph[data_graph['frameId'] == f[k]]['event'].iloc[0]          # sync frames to events
+        event = event.replace('_', ' ').title()                                     # replace original event formatting with spaces
+        if event != 'None':                                                         # update fresh event
             event_delay = event
-            fig.frames[k]['layout'].update(annotations=
+            
+            fig.frames[k]['layout'].update(annotations=                             # print out format above top endzone
                 [{'font': {'color': '#203731', 'size': 30},
                         'showarrow': False,
                         'text': event,
@@ -408,7 +378,7 @@ def plot_play(gameId, playId, data):
                         'y': 1,
                         'yref': 'paper'
                     }])
-        else:   # update with last event != None
+        else:                                                                       # update with last event != None
             fig.frames[k]['layout'].update(annotations=
                 [{'font': {'color': '#203731', 'size': 30},
                         'showarrow': False,

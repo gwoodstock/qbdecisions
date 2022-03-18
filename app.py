@@ -5,15 +5,17 @@ from dash import Dash, dcc, html, Input, Output
 from plot_play import load_data, plot_play
 
 
+# Initialize Dash web app
 app = Dash(__name__)
 server = app.server
 
 ################################################################################################
-# Data
-
+# Macro Play Data
 df = pd.read_csv("./data/plays.csv")
 
 games = [{"label": str(gameId), "value": gameId} for gameId in df['gameId'].unique()]
+# add back in random game start when full data set of plays has been processed
+# temporarily set to game 1
 # random_gameid = np.random.choice(df['gameId'].unique())
 # random_playid = np.random.choice(df[df['gameId'] == random_gameid]['playId'].unique())
 # random_team = df[(df['gameId'] == random_gameid) & (df['playId'] == random_playid)]['possessionTeam'].iloc[0]
@@ -28,7 +30,7 @@ app.layout = html.Div([
 
     # Menu
     html.Div([
-        # Selection Div
+        # Selection Drop Down Div
         html.Div([
             html.B(),
             dcc.RadioItems(
@@ -100,12 +102,13 @@ app.layout = html.Div([
 
     ], style={'display': 'flex', 'flex-direction': 'row', 'width':'100%'}),
 
+    # Graph Div
     html.Div([
-    # Graph
+    
     dcc.Graph(id='graph_play', config={'displayModeBar':False,'queueLength':0}, figure={}, style={'width': '100%', 'height': '70vh', 'align': 'center'}),
     ], ),
 
-    # Graph Size
+    # Graph Adjustment Bar (final div)
     html.Div([        
             html.P("Adjust field width:"),
             dcc.Slider(id='slider', min=25, max=100, step=25, value=100,
@@ -133,9 +136,7 @@ def update_graph(playId, gameId):
 
     week = df[df['gameId'] == gameId]['week'].iloc[0]
 
-    # print(week)
-    # print(gameId)
-    
+   
     if int(playId) != 0:
         fig, home_name, score_home, away_name, score_away = plot_play(gameId, playId, load_data(week=week, game=gameId))
     else:
@@ -202,4 +203,4 @@ def update_graph_size(width=100):
 # Launch App Locally
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
