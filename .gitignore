@@ -1,3 +1,5 @@
 
 .DS_Store
 __pycache__/plot_play.cpython-310.pyc
+scratch_pad.ipynb
+data/stores/wip_preds_file.pkl
