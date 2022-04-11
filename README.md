@@ -28,15 +28,15 @@ It is important to understand the concept of Expected Points Added (EPA) before 
 
 To illustrate this point, take a look at the series of graphs shared by [nfelo](www.nfeloapp.com).
 
-![Expected Outcomes](/submissions/projects/Capstone/Presentation_Images/expected_outcomes.png)
+![Expected Outcomes](./notebooks/Presentation_Images/expected_outcomes.png)
 Expected points are calculated by averaging the the number of points expected to be scored on a given drive relative to all possible outcomes.
 
-![EPA Slopes](/submissions/projects/Capstone/Presentation_Images/epa_slopes.png)
+![EPA Slopes](./notebooks/Presentation_Images/epa_slopes.png)
 Expected Points will change drastically depending on the down. The expected number of points on 4th down is lower than the expected number of points on 1st down.
 
-![Example A](/submissions/projects/Capstone/Presentation_Images/epa_a.png)
+![Example A](./notebooks/Presentation_Images/epa_a.png)
 Expected points from the 50 yard line on a 5 yard gain with 4 yards needed for a 1st down is positive.
-![Example B](/submissions/projects/Capstone/Presentation_Images/epa_b.png)
+![Example B](./notebooks/Presentation_Images/epa_b.png)
 Expected points from the 50 yard line on a 5 yard gain with 6 yards needed for a 1st down is negative.
 <br><br>
 
